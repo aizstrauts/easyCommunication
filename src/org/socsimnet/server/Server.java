@@ -1,3 +1,26 @@
+/*
+ * The MIT License
+ * Copyright (c) 2011. Artis Aizstrauts, Sociotechnical Systems Engineering Institute, http://socsimnet.com/
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
 package org.socsimnet.server;
 
 import org.json.JSONException;
@@ -50,7 +73,7 @@ public class Server extends Thread {
             System.out.println("Server is listening post " + this.port + "...");
             while (!this.stop) {
                 Socket client = serverSocket.accept();
-                System.out.println("Client accepted " + client.toString() + " " + client.hashCode());
+                System.out.println("Client accepted " + client.toString() + " hash:" + client.hashCode());
                 this.cDB.put(client.hashCode(), client);
                 new ClientHandler(client).start();
             }
@@ -79,26 +102,31 @@ public class Server extends Thread {
             try {
                 BufferedReader networkBin = new BufferedReader(new InputStreamReader(client.getInputStream()));
                 OutputStreamWriter networkPout = new OutputStreamWriter(client.getOutputStream());
-
+                JSONObject jsonObject;
+                String action;
                 while (true) {
-                    String line = null;
-                    line = networkBin.readLine();
-                    JSONObject jsonObject = new JSONObject(line);
-                    String action = jsonObject.get("action").toString();
+                    String line = networkBin.readLine();
+                    jsonObject = new JSONObject(line);
+                    action = jsonObject.get("action").toString();
                     if ((action == null) || action.equals("bye")) {
                         break;
                     } else if (action.equals("register_data")) {
+                        //TODO make action for register_data
 
                     } else if (action.equals("subscribe")) {
+                        //TODO make action for subscribe
 
                     } else if (action.equals("unsubscribe")) {
+                        //TODO make action for unsubscribe
 
                     } else if (action.equals("send_data")) {
+                        //TODO make action for send_data
 
                     } else if (action.equals("get_data")) {
+                        //TODO make action for get_data
 
                     } else if (action.equals("get_data_list")) {
-
+                        //TODO make action for get_data_list
                     }
 
                     networkPout.write(new JSONObject().put("msg", jsonObject.get("action")).toString() + "\r\n");
