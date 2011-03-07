@@ -52,13 +52,13 @@ public class Client {
     public Client() {
         this.serverHost = DEFAULT_SERVER_HOST;
         this.serverPort = DEFAULT_SERVER_PORT;
-        serverHandler = new ServerHandler();
+        serverHandler = new ServerHandler(this);
     }
 
     public Client(String serverHost, int serverPort) {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
-        serverHandler = new ServerHandler();
+        serverHandler = new ServerHandler(this);
     }
 
     public int getServerPort() {
@@ -111,17 +111,20 @@ public class Client {
     }
 
     private class ServerHandler extends Thread {
+        Client client;
         Socket sock;
         BufferedReader in;
         PrintWriter out;
 
-        private ServerHandler() {
+        public ServerHandler(Client client) {
+            this.client = client;
             this.init();
         }
 
         private void init() {
             try {
-                sock = new Socket(Client.DEFAULT_SERVER_HOST, Client.DEFAULT_SERVER_PORT);
+                System.out.println("Connecting to server (" + client.serverHost + ":" + client.serverPort + ")");
+                sock = new Socket(client.serverHost, client.serverPort);
                 in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 out = new PrintWriter(sock.getOutputStream(), true);
             } catch (IOException e) {
