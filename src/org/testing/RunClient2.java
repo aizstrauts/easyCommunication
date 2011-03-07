@@ -21,39 +21,22 @@
  * THE SOFTWARE.
  */
 
-package org.socsimnet.server;
+package org.testing;
 
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Set;
+import org.socsimnet.client.Client;
 
 /**
  * Organization: Sociotechnical Systems Engineering Institute
  * www: http://socsimnet.com/
  * User: artis
- * Date: 2/14/11
- * Time: 12:29 AM
+ * Date: 3/6/11
+ * Time: 11:13 PM
  */
-public class ConnectionDatabase {
-    private final HashMap<Integer, Socket> connections;
+public class RunClient2 {
+    public static void main(String[] args) {
+        Client client = new Client();
+        client.startServerHandler();
+        client.subscribeData("ziema");
 
-    public ConnectionDatabase(HashMap<Integer, Socket> connections) {
-        this.connections = connections;
-    }
-
-    public ConnectionDatabase() {
-        this.connections = new HashMap<Integer, Socket>();
-    }
-
-    public void put(Integer key, Socket value) {
-        this.connections.put(key, value);
-    }
-
-    public Object get(Integer key) {
-        return this.connections.get(key);
-    }
-
-    public Set<Integer> getKeySet() {
-        return this.connections.keySet();
     }
 }

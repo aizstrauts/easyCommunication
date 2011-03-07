@@ -96,18 +96,311 @@ public class ServerTest {
         PrintWriter out2 = new PrintWriter(sock2.getOutputStream(), true);
         assertTrue(out2 != null);
         assertTrue(sock2.isConnected());
-        out2.println(new JSONObject().put("action", "test2").toString());
+        out2.println(new JSONObject().put("action", "test").toString());
         out2.flush();
         String data2 = in2.readLine();
         JSONObject jsonObject2 = new JSONObject(data2);
-        assertEquals("test2", jsonObject2.get("msg"));
+        assertEquals("test", jsonObject2.get("msg"));
 
-        out.println(new JSONObject().put("action", "bye").toString());
-        out.flush();
-        out2.println(new JSONObject().put("action", "bye").toString());
-        out2.flush();
         server.stopServer();
+
+        String shutdownAction = in.readLine();
+        String shutdownAction2 = in2.readLine();
+
+        jsonObject = new JSONObject(shutdownAction);
+        assertEquals("shutdown", jsonObject.get("action"));
+
+        jsonObject = new JSONObject(shutdownAction2);
+        assertEquals("shutdown", jsonObject.get("action"));
+    }
+
+    @Test
+    public void testDataRegistration() throws Exception {
+        Server server = new Server();
+        assertTrue(server != null);
+        server.start();
+        Socket sock = new Socket("localhost", server.getPort());
+        assertTrue(sock != null);
+        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+        assertTrue(in != null);
+        PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+        assertTrue(out != null);
+        assertTrue(sock.isConnected());
+        JSONObject json = new JSONObject();
+        json.put("action", "register_data");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        String data = in.readLine();
+        JSONObject jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+        server.stopServer();
+
+        String shutdownAction = in.readLine();
+        jsonObject = new JSONObject(shutdownAction);
+
+        assertEquals("shutdown", jsonObject.get("action"));
+    }
+
+    @Test
+    public void testGetDataList() throws Exception {
+        Server server = new Server();
+        assertTrue(server != null);
+        server.start();
+        Socket sock = new Socket("localhost", server.getPort());
+        assertTrue(sock != null);
+        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+        assertTrue(in != null);
+        PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+        assertTrue(out != null);
+        assertTrue(sock.isConnected());
+
+        PrintWriter out2 = new PrintWriter(sock.getOutputStream(), true);
+
+        //reg few test data
+        JSONObject json = new JSONObject();
+        json.put("action", "register_data");
+        json.put("name", "test_name");
+        out2.println(json.toString());
+        out2.flush();
+        in.readLine();
+
+        json = new JSONObject();
+        json.put("action", "register_data");
+        json.put("name", "test_name2");
+        out2.println(json.toString());
+        out2.flush();
+        in.readLine();
+
+
+        json = new JSONObject();
+        json.put("action", "get_data_list");
+        out.println(json.toString());
+        out.flush();
+        String data = in.readLine();
+        JSONObject jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+        server.stopServer();
+    }
+
+    @Test
+    public void testGetData() throws Exception {
+        Server server = new Server();
+        assertTrue(server != null);
+        server.start();
+        Socket sock = new Socket("localhost", server.getPort());
+        assertTrue(sock != null);
+        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+        assertTrue(in != null);
+        PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+        assertTrue(out != null);
+        assertTrue(sock.isConnected());
+
+        //reg few test data
+        JSONObject json = new JSONObject();
+        json.put("action", "register_data");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        in.readLine();
+
+        json = new JSONObject();
+        json.put("action", "get_data");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        String data = in.readLine();
+        JSONObject jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+        server.stopServer();
+    }
+
+    @Test
+    public void testSubscribe() throws Exception {
+        Server server = new Server();
+        assertTrue(server != null);
+        server.start();
+        Socket sock = new Socket("localhost", server.getPort());
+        assertTrue(sock != null);
+        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+        assertTrue(in != null);
+        PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+        assertTrue(out != null);
+        assertTrue(sock.isConnected());
+
+        JSONObject json = new JSONObject();
+        json.put("action", "subscribe");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        String data = in.readLine();
+        JSONObject jsonObject = new JSONObject(data);
+        assertEquals("error", jsonObject.get("status"));
+
+        //reg few test data
+        json = new JSONObject();
+        json.put("action", "register_data");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        in.readLine();
+
+        json = new JSONObject();
+        json.put("action", "subscribe");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        data = in.readLine();
+        jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+        server.stopServer();
+    }
+
+    @Test
+    public void testUnsubscribe() throws Exception {
+        Server server = new Server();
+        assertTrue(server != null);
+        server.start();
+        Socket sock = new Socket("localhost", server.getPort());
+        assertTrue(sock != null);
+        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+        assertTrue(in != null);
+        PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+        assertTrue(out != null);
+        assertTrue(sock.isConnected());
+
+
+        Socket sock2 = new Socket("localhost", server.getPort());
+        assertTrue(sock != null);
+        BufferedReader in2 = new BufferedReader(new InputStreamReader(sock2.getInputStream()));
+        assertTrue(in != null);
+        PrintWriter out2 = new PrintWriter(sock2.getOutputStream(), true);
+        assertTrue(out != null);
+        assertTrue(sock2.isConnected());
+
+
+        JSONObject json = new JSONObject();
+        json.put("action", "unsubscribe");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        String data = in.readLine();
+        JSONObject jsonObject = new JSONObject(data);
+        assertEquals("error", jsonObject.get("status"));
+
+        //reg few test data
+        json = new JSONObject();
+        json.put("action", "register_data");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        in.readLine();
+
+
+        json = new JSONObject();
+        json.put("action", "subscribe");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        data = in.readLine();
+        jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+
+        json = new JSONObject();
+        json.put("action", "subscribe");
+        json.put("name", "test_name");
+        out2.println(json.toString());
+        out2.flush();
+        data = in2.readLine();
+        jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+
+        json = new JSONObject();
+        json.put("action", "unsubscribe");
+        json.put("name", "test_name");
+        out2.println(json.toString());
+        out2.flush();
+        data = in2.readLine();
+        jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+
+        server.stopServer();
+    }
+
+    @Test
+    public void testSendData() throws Exception {
+
+        Server server = new Server();
+        assertTrue(server != null);
+        server.start();
+        Socket sock = new Socket("localhost", server.getPort());
+        assertTrue(sock != null);
+        BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+        assertTrue(in != null);
+        PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+        assertTrue(out != null);
+        assertTrue(sock.isConnected());
+
+
+        Socket sock2 = new Socket("localhost", server.getPort());
+        assertTrue(sock != null);
+        BufferedReader in2 = new BufferedReader(new InputStreamReader(sock2.getInputStream()));
+        assertTrue(in != null);
+        PrintWriter out2 = new PrintWriter(sock2.getOutputStream(), true);
+        assertTrue(out != null);
+        assertTrue(sock2.isConnected());
+
+        //reg few test data
+        JSONObject json = new JSONObject();
+        json = new JSONObject();
+        json.put("action", "register_data");
+        json.put("name", "test_name");
+        out.println(json.toString());
+        out.flush();
+        in.readLine();
+
+        json = new JSONObject();
+        json.put("action", "subscribe");
+        json.put("name", "test_name");
+        out2.println(json.toString());
+        out2.flush();
+        String data = in2.readLine();
+        JSONObject jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+        json = new JSONObject();
+        json.put("action", "send_data");
+        json.put("name", "test_name");
+        json.put("value", "test_value");
+        out.println(json.toString());
+        out.flush();
+        in.readLine();
+
+        data = in2.readLine();
+        jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+
+        json = new JSONObject();
+        json.put("action", "send_data");
+        json.put("name", "test_name");
+        json.put("value", "test_value2");
+        out.println(json.toString());
+        out.flush();
+        in.readLine();
+
+        data = in2.readLine();
+        jsonObject = new JSONObject(data);
+        assertEquals("ok", jsonObject.get("status"));
+        assertEquals("test_value2", jsonObject.get("value"));
 
 
     }
+
 }

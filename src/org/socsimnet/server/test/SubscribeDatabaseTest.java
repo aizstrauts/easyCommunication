@@ -21,39 +21,48 @@
  * THE SOFTWARE.
  */
 
-package org.socsimnet.server;
+package org.socsimnet.server.test;
 
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Set;
+import org.junit.Test;
+import org.socsimnet.server.SubscribeDatabase;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Organization: Sociotechnical Systems Engineering Institute
  * www: http://socsimnet.com/
  * User: artis
- * Date: 2/14/11
- * Time: 12:29 AM
+ * Date: 2/28/11
+ * Time: 11:46 PM
  */
-public class ConnectionDatabase {
-    private final HashMap<Integer, Socket> connections;
+public class SubscribeDatabaseTest {
+    @Test
+    public void testPut() throws Exception {
 
-    public ConnectionDatabase(HashMap<Integer, Socket> connections) {
-        this.connections = connections;
     }
 
-    public ConnectionDatabase() {
-        this.connections = new HashMap<Integer, Socket>();
+    @Test
+    public void testGet() throws Exception {
+
     }
 
-    public void put(Integer key, Socket value) {
-        this.connections.put(key, value);
+    @Test
+    public void testHasKey() throws Exception {
+
     }
 
-    public Object get(Integer key) {
-        return this.connections.get(key);
+    @Test
+    public void testGetKeySet() throws Exception {
+
     }
 
-    public Set<Integer> getKeySet() {
-        return this.connections.keySet();
+    @Test
+    public void testToString() throws Exception {
+        SubscribeDatabase subscribers = new SubscribeDatabase();
+        subscribers.put("data1", 123);
+        subscribers.put("data2", 567);
+        String expected = "{\"data1\":[\"123\"]},{\"data2\":[\"567\"]}";
+        String actual = subscribers.toString();
+        assertEquals(expected, actual);
     }
 }

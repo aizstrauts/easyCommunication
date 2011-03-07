@@ -21,39 +21,36 @@
  * THE SOFTWARE.
  */
 
-package org.socsimnet.server;
+package org.socsimnet.server.test;
 
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Set;
+import org.junit.Test;
+import org.socsimnet.server.DataDatabase;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Organization: Sociotechnical Systems Engineering Institute
  * www: http://socsimnet.com/
  * User: artis
- * Date: 2/14/11
- * Time: 12:29 AM
+ * Date: 2/19/11
+ * Time: 11:45 PM
  */
-public class ConnectionDatabase {
-    private final HashMap<Integer, Socket> connections;
-
-    public ConnectionDatabase(HashMap<Integer, Socket> connections) {
-        this.connections = connections;
+public class DataDatabaseTest {
+    @Test
+    public void testPutGet() throws Exception {
+        DataDatabase instance = new DataDatabase();
+        String expResult = "data1";
+        instance.put("testdata", "data1");
+        String result = instance.get("testdata");
+        assertEquals(expResult, result);
     }
 
-    public ConnectionDatabase() {
-        this.connections = new HashMap<Integer, Socket>();
-    }
-
-    public void put(Integer key, Socket value) {
-        this.connections.put(key, value);
-    }
-
-    public Object get(Integer key) {
-        return this.connections.get(key);
-    }
-
-    public Set<Integer> getKeySet() {
-        return this.connections.keySet();
+    @Test
+    public void testToString() throws Exception {
+        DataDatabase instance = new DataDatabase();
+        String expResult = "{\"testdata\":\"data1\"}";
+        instance.put("testdata", "data1");
+        String result = instance.toString();
+        assertEquals(expResult, result);
     }
 }

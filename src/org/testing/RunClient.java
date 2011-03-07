@@ -21,39 +21,45 @@
  * THE SOFTWARE.
  */
 
-package org.socsimnet.server;
+package org.testing;
 
-import java.net.Socket;
-import java.util.HashMap;
-import java.util.Set;
+import org.socsimnet.client.Client;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Organization: Sociotechnical Systems Engineering Institute
  * www: http://socsimnet.com/
  * User: artis
- * Date: 2/14/11
- * Time: 12:29 AM
+ * Date: 3/6/11
+ * Time: 11:05 PM
  */
-public class ConnectionDatabase {
-    private final HashMap<Integer, Socket> connections;
+public class RunClient {
+    public static void main(String[] args) {
+        Client client = new Client();
+        client.startServerHandler();
+        client.registerData("ziema");
 
-    public ConnectionDatabase(HashMap<Integer, Socket> connections) {
-        this.connections = connections;
-    }
+        String CurLine = ""; // Line read from standard in
 
-    public ConnectionDatabase() {
-        this.connections = new HashMap<Integer, Socket>();
-    }
+        System.out.println("Enter a line of text (type 'quit' to exit): ");
+        InputStreamReader converter = new InputStreamReader(System.in);
+        BufferedReader in = new BufferedReader(converter);
 
-    public void put(Integer key, Socket value) {
-        this.connections.put(key, value);
-    }
+        while (!(CurLine.equals("quit"))) {
+            try {
+                CurLine = in.readLine();
 
-    public Object get(Integer key) {
-        return this.connections.get(key);
-    }
+                if (!(CurLine.equals("quit"))) {
+                    System.out.println("You send vale: " + CurLine);
+                    client.sendData("ziema", CurLine);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
 
-    public Set<Integer> getKeySet() {
-        return this.connections.keySet();
     }
 }
