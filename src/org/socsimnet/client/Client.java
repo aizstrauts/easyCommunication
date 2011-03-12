@@ -183,7 +183,6 @@ public class Client {
                 String status;
                 while (true) {
                     String line = in.readLine();
-                    System.out.println("LINE:" + line);
                     jsonObject = new JSONObject(line);
                     action = jsonObject.get("action").toString();
                     status = jsonObject.get("status").toString();
@@ -191,10 +190,7 @@ public class Client {
 
                     } else {
                         //TODO unknown action
-
                     }
-
-
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -202,6 +198,5 @@ public class Client {
                 e.printStackTrace();
             }
         }
-
     }
 }
