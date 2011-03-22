@@ -169,7 +169,7 @@ public class Server extends Thread {
                 String action;
                 while (true) {
                     String line = networkBin.readLine();
-                    System.out.println("SERVER LINE:" + line);
+                    System.out.println("DEBUG incoming json:" + line);
                     jsonObject = new JSONObject(line);
                     action = jsonObject.get("action").toString();
                     if ((action == null) || action.equals("bye")) {
@@ -252,6 +252,7 @@ public class Server extends Thread {
                         networkPout.write(returnData + "\r\n");
                         networkPout.flush();
                     } else if (action.equals("test")) {
+                        //TODO remove this testing case!!!
                         networkPout.write(new JSONObject().put("msg", jsonObject.get("action")).toString() + "\r\n");
                         networkPout.flush();
                     } else {
@@ -284,6 +285,9 @@ public class Server extends Thread {
                 server.dDB.put(name, "");
                 returnJSON.put("status", "ok");
                 returnJSON.put("action", "register_data");
+
+                announceNewData(name);
+
                 return returnJSON.toString();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -297,7 +301,7 @@ public class Server extends Thread {
             for (Object aSet : set) {
                 String name = (String) aSet;
                 try {
-                    returnJSON.append("datalist", (new JSONObject()).put("name", name));
+                    returnJSON.append("data_list", (new JSONObject()).put("name", name));
                     returnJSON.put("status", "ok");
                     returnJSON.put("action", "get_data_list");
                 } catch (JSONException e) {
@@ -305,20 +309,6 @@ public class Server extends Thread {
                 }
             }
             return returnJSON.toString();
-        }
-
-        private String getRegistredData(String key) {
-            //TODO vai ši funkcija atbilst merķim??
-            JSONObject returnJSON = new JSONObject();
-            try {
-                returnJSON.put("data", (new JSONObject()).put("name", server.dDB.get(key)));
-                returnJSON.put("status", "ok");
-                returnJSON.put("action", "get_data");
-                return returnJSON.toString();
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return "{\"status\":\"error\",\"action\":\"get_data\",\"msg\":\"" + server.ERROR_MESSAGE_GET_DATA_SYSTEM_ERROR + "\"}";
-            }
         }
 
         private String subscribeData(String key, int clientHash) {
@@ -373,13 +363,56 @@ public class Server extends Thread {
                     returnJSON.put("action", "send_data");
                     return returnJSON.toString();
                 } else {
-                    return "{\"status\":\"error\",\"action\":\"unsubscribe\",\"msg\":\"" + server.ERROR_MESSAGE_SEND_DATA_UNKNOWN_NAME + "\"}";
+                    return "{\"status\":\"error\",\"action\":\"send_data\",\"msg\":\"" + server.ERROR_MESSAGE_SEND_DATA_UNKNOWN_NAME + "\"}";
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                return "{\"status\":\"error\",\"action\":\"unsubscribe\",\"msg\":\"" + server.ERROR_MESSAGE_SEND_DATA_SYSTEM_ERROR + "\"}";
+                return "{\"status\":\"error\",\"action\":\"send_data\",\"msg\":\"" + server.ERROR_MESSAGE_SEND_DATA_SYSTEM_ERROR + "\"}";
             }
         }
+
+        private String getRegistredData(String key) {
+            //TODO vai ši funkcija atbilst merķim??
+            JSONObject returnJSON = new JSONObject();
+            try {
+                returnJSON.put("status", "ok");
+                returnJSON.put("action", "get_data");
+                returnJSON.put("name", key);
+                returnJSON.put("value", server.dDB.get(key));
+                return returnJSON.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "{\"status\":\"error\",\"action\":\"get_data\",\"msg\":\"" + server.ERROR_MESSAGE_GET_DATA_SYSTEM_ERROR + "\"}";
+            }
+        }
+
+
+        private void announceNewData(String dataName) {
+            Set set = server.cDB.getKeySet();
+            Iterator i = set.iterator();
+            int key;
+            OutputStreamWriter networkPout;
+            Socket subscriber;
+            JSONObject returnJSON = new JSONObject();
+            while (i.hasNext()) {
+                key = (Integer) i.next();
+                subscriber = (Socket) server.cDB.get(key);
+                try {
+                    networkPout = new OutputStreamWriter(subscriber.getOutputStream());
+                    returnJSON.put("status", "ok");
+                    returnJSON.put("action", "new_data");
+                    returnJSON.put("name", dataName);
+                    networkPout.write(returnJSON.toString() + "\r\n");
+                    networkPout.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
 
         private void sendDataToAllSubscribers(String dataName) {
             Set set = server.cDB.getKeySet();
@@ -395,6 +428,7 @@ public class Server extends Thread {
                     networkPout = new OutputStreamWriter(subscriber.getOutputStream());
                     returnJSON.put("status", "ok");
                     returnJSON.put("action", "get_data");
+                    returnJSON.put("name", dataName);
                     returnJSON.put("value", server.dDB.get(dataName));
                     networkPout.write(returnJSON.toString() + "\r\n");
                     networkPout.flush();

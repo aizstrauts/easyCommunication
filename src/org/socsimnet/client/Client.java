@@ -23,14 +23,18 @@
 
 package org.socsimnet.client;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.swing.text.html.HTMLDocument;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * Organization: Sociotechnical Systems Engineering Institute
@@ -46,18 +50,25 @@ public class Client {
     private String serverHost;
     private int serverPort;
 
+    private final DataDatabase dDB;
+    private final AvailableDataDatabase adDB;
+
     private ServerHandler serverHandler;
     private boolean serverHanderIsRunning = false;
 
     public Client() {
         this.serverHost = DEFAULT_SERVER_HOST;
         this.serverPort = DEFAULT_SERVER_PORT;
+        this.dDB = new DataDatabase();
+        this.adDB = new AvailableDataDatabase();
         serverHandler = new ServerHandler(this);
     }
 
     public Client(String serverHost, int serverPort) {
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+        this.dDB = new DataDatabase();
+        this.adDB = new AvailableDataDatabase();
         serverHandler = new ServerHandler(this);
     }
 
@@ -88,19 +99,27 @@ public class Client {
 
     public void unsubscribeData(String name) {
         if (this.serverHanderIsRunning) {
-            //TODO unsubscribe
+            serverHandler.unsubscribeData(name);
         }
     }
 
-    public void getData(String name) {
+    public String getData(String name) {
+        return this.dDB.get(name);
+    }
+
+    public void refreshData(String name) {
         if (this.serverHanderIsRunning) {
-            //TOOD get data
+            serverHandler.getData(name);
         }
     }
 
-    public void getDataList(String name) {
+    public AvailableDataDatabase getDataList() {
+        return this.adDB;
+    }
+
+    public void refreshDataList() {
         if (this.serverHanderIsRunning) {
-            //TODO get data list
+            serverHandler.getDataList();
         }
     }
 
@@ -110,11 +129,17 @@ public class Client {
         }
     }
 
+    public void stopServerHandler() {
+        this.serverHandler.requestStop();
+        this.serverHandler = null;
+    }
+
     private class ServerHandler extends Thread {
         Client client;
         Socket sock;
         BufferedReader in;
         PrintWriter out;
+        private volatile boolean stop = false;
 
         public ServerHandler(Client client) {
             this.client = client;
@@ -129,6 +154,19 @@ public class Client {
                 out = new PrintWriter(sock.getOutputStream(), true);
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+
+        public void requestStop() {
+            try {
+                this.stop = true;
+                this.sock.shutdownInput();
+                this.sock.shutdownOutput();
+                this.sock.close();
+                this.in.close();
+                this.out.close();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
 
@@ -160,6 +198,46 @@ public class Client {
             }
         }
 
+        protected void unsubscribeData(String name) {
+            try {
+                if (name != null && name.length() > 0) {
+                    JSONObject json = new JSONObject();
+                    json.put("action", "unsubscribe");
+                    json.put("name", name);
+                    out.println(json.toString());
+                    out.flush();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        protected void getDataList() {
+            try {
+                JSONObject json = new JSONObject();
+                json.put("action", "get_data_list");
+                out.println(json.toString());
+                out.flush();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        protected void getData(String name) {
+            try {
+                if (name != null && name.length() > 0) {
+                    JSONObject json = new JSONObject();
+                    json.put("action", "get_data");
+                    json.put("name", name);
+                    out.println(json.toString());
+                    out.flush();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         protected void sendData(String name, String value) {
             try {
                 if (name != null && name.length() > 0 && value != null && value.length() > 0) {
@@ -181,17 +259,46 @@ public class Client {
                 JSONObject jsonObject;
                 String action;
                 String status;
-                while (true) {
+                while (!this.stop) {
                     String line = in.readLine();
                     jsonObject = new JSONObject(line);
+                    System.out.println("DEBUG:: incoming json: " + jsonObject.toString());
                     action = jsonObject.get("action").toString();
                     status = jsonObject.get("status").toString();
                     if ("register_data".equals(action)) {
 
+                    } else if ("subscribe".equals(action)) {
+
+                    } else if ("unsubscribe".equals(action)) {
+
+                    } else if ("send_data".equals(action)) {
+
+                    } else if ("get_data".equals(action)) {
+                        if ("ok".equals(status)) {
+                            String name = jsonObject.get("name").toString();
+                            String value = jsonObject.get("value").toString();
+                            this.client.dDB.put(name, value);
+                        } else {
+                            System.out.println("DEBUG:: incoming get_data error:" + jsonObject.get("msg").toString());
+                        }
+                    } else if ("get_data_list".equals(action)) {
+                        JSONArray dataList = jsonObject.getJSONArray("data_list");
+                        int size = dataList.length();
+                        this.client.adDB.clear();
+                        for (int i = 0; i < size; i++) {
+                            JSONObject d = (JSONObject) dataList.get(i);
+                            this.client.adDB.add((String) d.get("name"));
+                        }
+                    } else if ("new_data".equals(action)) {
+                        String name = jsonObject.get("name").toString();
+                        if (!this.client.adDB.contains(name)) {
+                            this.client.adDB.add(name);
+                        }
                     } else {
-                        //TODO unknown action
+                        System.out.println("DEBUG:: incoming error, unknown action!");
                     }
                 }
+                System.out.println("Exit Client ServerHandler");
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {

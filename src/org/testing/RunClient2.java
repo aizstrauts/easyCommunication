@@ -25,6 +25,7 @@ package org.testing;
 
 import org.socsimnet.client.Client;
 
+
 /**
  * Organization: Sociotechnical Systems Engineering Institute
  * www: http://socsimnet.com/
@@ -37,6 +38,7 @@ public class RunClient2 {
         Client client = new Client();
         client.startServerHandler();
         client.subscribeData("ziema");
-
+        client.registerData("pavasaris");
+        client.getDataList();
     }
 }

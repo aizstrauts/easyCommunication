@@ -23,57 +23,17 @@
 
 package org.socsimnet.client;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.Vector;
 
 /**
- * Organization: Sociotechnical Systems Engineering Institute
- * www: http://socsimnet.com/
+ * Created by IntelliJ IDEA.
  * User: artis
- * Date: 2/19/11
- * Time: 11:32 PM
+ * Date: 3/22/11
+ * Time: 11:12 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class DataDatabase {
-    private HashMap<String, String> dataMap;
-
-    public DataDatabase() {
-        this.dataMap = new HashMap<String, String>();
+public class AvailableDataDatabase extends Vector<String> {
+    public AvailableDataDatabase() {
+        super();
     }
-
-    public void put(String key, String data) {
-        this.dataMap.put(key, data);
-    }
-
-    public String get(String key) {
-        if (this.dataMap.containsKey(key)) {
-            return this.dataMap.get(key);
-        } else {
-            return "";
-        }
-    }
-
-    public boolean hasKey(String key) {
-        return this.dataMap.containsKey(key);
-    }
-
-    public Set<String> getKeySet() {
-        return this.dataMap.keySet();
-    }
-
-    @Override
-    public String toString() {
-        String returnData = "";
-        Set set = this.dataMap.keySet();
-        Iterator i = set.iterator();
-        String key;
-        while (i.hasNext()) {
-            key = (String) i.next();
-            returnData += ",{\"" + key + "\":\"" + this.dataMap.get(key) + "\"}";
-        }
-        if (returnData.length() > 1) returnData = returnData.substring(1); // removes starting comma
-        return returnData;
-    }
-
 }
