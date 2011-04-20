@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.testing.mainForm">
+  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="FormLayout">
+    <rowspec value="center:d:noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:84px:noGrow"/>
+    <rowspec value="top:48dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:18px:noGrow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:3dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:d:noGrow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:152px:noGrow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:32px:noGrow"/>
+    <colspec value="left:5dlu:noGrow"/>
+    <colspec value="right:47dlu:noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="left:31dlu:noGrow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:32px:noGrow"/>
+    <colspec value="left:64px:noGrow"/>
+    <colspec value="left:98px:noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <constraints>
+      <xy x="20" y="20" width="709" height="499"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="a745d" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="70ee1"/>
+          <text value="Server:"/>
+        </properties>
+      </component>
+      <component id="70ee1" class="javax.swing.JTextField" binding="textFieldServer">
+        <constraints>
+          <grid row="0" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="localhost"/>
+        </properties>
+      </component>
+      <component id="2bb6a" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <labelFor value="deb3b"/>
+          <text value="Port:"/>
+        </properties>
+      </component>
+      <component id="deb3b" class="javax.swing.JTextField" binding="textFieldPort">
+        <constraints>
+          <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="1984"/>
+        </properties>
+      </component>
+      <component id="4ff4d" class="javax.swing.JButton" binding="connectButton" default-binding="true">
+        <constraints>
+          <grid row="0" column="9" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Connect"/>
+        </properties>
+      </component>
+      <scrollpane id="fa002">
+        <constraints>
+          <grid row="4" column="2" row-span="5" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="f40a8" class="javax.swing.JList" binding="list1" default-binding="true">
+            <constraints/>
+            <properties>
+              <model>
+                <item value="ziema"/>
+                <item value="pavasaris"/>
+                <item value="vasara"/>
+                <item value="rudens"/>
+                <item value="žeņšeņ sakne"/>
+                <item value="kartupelis"/>
+                <item value="viens"/>
+                <item value="divi"/>
+                <item value="trīs"/>
+                <item value="četri"/>
+                <item value="pieci"/>
+                <item value="seši"/>
+                <item value="septiņi"/>
+                <item value="astoņi"/>
+                <item value="deviņi"/>
+                <item value="desmit"/>
+              </model>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <component id="5ba3f" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Available data:"/>
+        </properties>
+      </component>
+      <component id="8537d" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="6" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Subscribed data:"/>
+        </properties>
+      </component>
+      <scrollpane id="1c18e">
+        <constraints>
+          <grid row="4" column="6" row-span="5" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="e464a" class="javax.swing.JList" binding="list2" default-binding="true">
+            <constraints/>
+            <properties>
+              <model/>
+              <toolTipText value="Select data to get info"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <component id="d4bfc" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="2" column="12" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Your data:"/>
+        </properties>
+      </component>
+      <scrollpane id="f99fc">
+        <constraints>
+          <grid row="4" column="12" row-span="5" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-vert="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="7202e" class="javax.swing.JList" binding="list3" default-binding="true">
+            <constraints/>
+            <properties>
+              <model>
+                <item value="ziema"/>
+                <item value="vasara"/>
+                <item value="rudens"/>
+              </model>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="2a7f9" layout-manager="FormLayout">
+        <rowspec value="top:12dlu:noGrow"/>
+        <rowspec value="top:11dlu:noGrow"/>
+        <colspec value="fill:198px:noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:189px:noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <constraints>
+          <grid row="10" column="2" row-span="1" col-span="9" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties/>
+        <border type="etched" title="Data information"/>
+        <children>
+          <component id="48f64" class="javax.swing.JLabel" binding="infoLabelName">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Name:"/>
+            </properties>
+          </component>
+          <component id="48465" class="javax.swing.JLabel" binding="infoLabelLastValue">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Last value:"/>
+            </properties>
+          </component>
+          <component id="a40ad" class="javax.swing.JLabel" binding="infoLabelOwner">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Owner:"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <component id="ec032" class="javax.swing.JButton" binding="addButton" default-binding="true">
+        <constraints>
+          <grid row="10" column="12" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <borderPainted value="true"/>
+          <contentAreaFilled value="true"/>
+          <defaultCapable value="true"/>
+          <focusPainted value="true"/>
+          <hideActionText value="false"/>
+          <text value="Add"/>
+          <toolTipText value="Register new data"/>
+          <verticalAlignment value="0"/>
+          <verticalTextPosition value="0"/>
+        </properties>
+      </component>
+      <component id="8133a" class="javax.swing.JButton" binding="removeButton" default-binding="true">
+        <constraints>
+          <grid row="10" column="14" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Remove"/>
+          <toolTipText value="Unregister data"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>
