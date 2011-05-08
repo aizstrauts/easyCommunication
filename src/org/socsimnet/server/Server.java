@@ -296,17 +296,18 @@ public class Server extends Thread {
         }
 
         private String getRegistredDataList() {
+            System.out.println("getRegistredDataList");
             JSONObject returnJSON = new JSONObject();
             Set set = server.dDB.getKeySet();
-            for (Object aSet : set) {
-                String name = (String) aSet;
-                try {
+            try {
+                for (Object aSet : set) {
+                    String name = (String) aSet;
                     returnJSON.append("data_list", (new JSONObject()).put("name", name));
-                    returnJSON.put("status", "ok");
-                    returnJSON.put("action", "get_data_list");
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
+                returnJSON.put("status", "ok");
+                returnJSON.put("action", "get_data_list");
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             return returnJSON.toString();
         }
@@ -316,6 +317,7 @@ public class Server extends Thread {
             try {
                 if (!server.dDB.hasKey(key)) {
                     returnJSON.put("status", "error");
+                    returnJSON.put("name", key);
                     returnJSON.put("action", "subscribe");
                     returnJSON.put("msg", server.ERROR_MESSAGE_SUBDCRIBE_DATA_UNKNOWN_NAME);
                     return returnJSON.toString();
@@ -323,6 +325,7 @@ public class Server extends Thread {
                 server.sDB.put(key, clientHash);
 
                 returnJSON.put("status", "ok");
+                returnJSON.put("name", key);
                 returnJSON.put("action", "subscribe");
                 returnJSON.put("lastvalue", server.dDB.get(key));
                 return returnJSON.toString();
@@ -337,12 +340,14 @@ public class Server extends Thread {
             try {
                 if (!server.dDB.hasKey(key)) {
                     returnJSON.put("status", "error");
+                    returnJSON.put("name", key);
                     returnJSON.put("action", "unsubscribe");
                     returnJSON.put("msg", server.ERROR_MESSAGE_UNSUBDCRIBE_DATA_UNKNOWN_NAME);
                     return returnJSON.toString();
                 }
                 server.sDB.remove(key, clientHash);
                 returnJSON.put("status", "ok");
+                returnJSON.put("name", key);
                 returnJSON.put("action", "unsubscribe");
                 return returnJSON.toString();
             } catch (JSONException e) {
@@ -386,7 +391,6 @@ public class Server extends Thread {
             }
         }
 
-
         private void announceNewData(String dataName) {
             Set set = server.cDB.getKeySet();
             Iterator i = set.iterator();
@@ -413,9 +417,8 @@ public class Server extends Thread {
 
         }
 
-
         private void sendDataToAllSubscribers(String dataName) {
-            Set set = server.cDB.getKeySet();
+            Set set = server.sDB.get(dataName);
             Iterator i = set.iterator();
             int key;
             OutputStreamWriter networkPout;

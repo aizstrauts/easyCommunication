@@ -27,14 +27,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.swing.text.html.HTMLDocument;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * Organization: Sociotechnical Systems Engineering Institute
@@ -49,6 +46,7 @@ public class Client {
 
     private String serverHost;
     private int serverPort;
+    private boolean ready;
 
     private final DataDatabase dDB;
     private final AvailableDataDatabase adDB;
@@ -61,6 +59,7 @@ public class Client {
         this.serverPort = DEFAULT_SERVER_PORT;
         this.dDB = new DataDatabase();
         this.adDB = new AvailableDataDatabase();
+        this.ready = false;
         serverHandler = new ServerHandler(this);
     }
 
@@ -69,6 +68,7 @@ public class Client {
         this.serverPort = serverPort;
         this.dDB = new DataDatabase();
         this.adDB = new AvailableDataDatabase();
+        this.ready = false;
         serverHandler = new ServerHandler(this);
     }
 
@@ -82,6 +82,7 @@ public class Client {
 
     public void startServerHandler() {
         serverHandler.start();
+        serverHandler.getDataList();
         serverHanderIsRunning = true;
     }
 
@@ -132,6 +133,10 @@ public class Client {
     public void stopServerHandler() {
         this.serverHandler.requestStop();
         this.serverHandler = null;
+    }
+
+    public boolean isReady() {
+        return ready;
     }
 
     private class ServerHandler extends Thread {
@@ -265,9 +270,18 @@ public class Client {
                     System.out.println("DEBUG:: incoming json: " + jsonObject.toString());
                     action = jsonObject.get("action").toString();
                     status = jsonObject.get("status").toString();
+
+                    System.out.println("action:" + action);
                     if ("register_data".equals(action)) {
 
                     } else if ("subscribe".equals(action)) {
+                        try {
+                            String name = jsonObject.get("name").toString();
+                            String value = jsonObject.get("lastvalue").toString();
+                            this.client.dDB.put(name, value);
+                        } catch (JSONException jsonex) {
+                            jsonex.printStackTrace();
+                        }
 
                     } else if ("unsubscribe".equals(action)) {
 
@@ -282,12 +296,20 @@ public class Client {
                             System.out.println("DEBUG:: incoming get_data error:" + jsonObject.get("msg").toString());
                         }
                     } else if ("get_data_list".equals(action)) {
-                        JSONArray dataList = jsonObject.getJSONArray("data_list");
-                        int size = dataList.length();
-                        this.client.adDB.clear();
-                        for (int i = 0; i < size; i++) {
-                            JSONObject d = (JSONObject) dataList.get(i);
-                            this.client.adDB.add((String) d.get("name"));
+                        try {
+                            if (jsonObject.has("data_list")) {
+                                JSONArray dataList = jsonObject.getJSONArray("data_list");
+
+                                int size = dataList.length();
+                                this.client.adDB.clear();
+                                for (int i = 0; i < size; i++) {
+                                    JSONObject d = (JSONObject) dataList.get(i);
+                                    this.client.adDB.add((String) d.get("name"));
+                                }
+                            }
+                            this.client.ready = true;
+                        } catch (JSONException jsonex) {
+                            jsonex.printStackTrace();
                         }
                     } else if ("new_data".equals(action)) {
                         String name = jsonObject.get("name").toString();

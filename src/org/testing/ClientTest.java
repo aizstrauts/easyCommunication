@@ -85,6 +85,17 @@ public class ClientTest extends Thread {
                     client.stopServerHandler();
                     client = null;
                     break;
+                } else {
+                    System.out.println("=== HELP ===");
+                    System.out.println("Available commands:");
+                    System.out.println("\tregister {name}");
+                    System.out.println("\tsubscribe {name}");
+                    System.out.println("\tunsubscribe {name}");
+                    System.out.println("\tget {name}");
+                    System.out.println("\tsend {name} {value}");
+                    System.out.println("\tretgetdatalist");
+                    System.out.println("=========");
+
                 }
                 System.out.print("Enter command:");
             }

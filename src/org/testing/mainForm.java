@@ -23,6 +23,7 @@
 
 package org.testing;
 
+import org.socsimnet.client.AvailableDataDatabase;
 import org.socsimnet.client.Client;
 
 import javax.swing.*;
@@ -31,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -125,7 +127,27 @@ public class mainForm {
 
                 if (!error) {
                     client = new Client(server, Integer.parseInt(port));
+                    System.out.println("aaa:" + client.isReady());
                     client.startServerHandler();
+                    System.out.println("bbb:" + client.isReady());
+                    while (!client.isReady()) {
+                        try {
+                            System.out.println("1111111");
+                            this.wait(5000);
+                            System.out.println("2222222");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
+                    }
+                    AvailableDataDatabase adDB = client.getDataList();
+                    Enumeration vEnum = adDB.elements();
+                    System.out.println("Available data:");
+                    while (vEnum.hasMoreElements()) {
+                        System.out.print(vEnum.nextElement() + " ");
+                    }
+                    System.out.println();
+
+
                 }
             }
         });
